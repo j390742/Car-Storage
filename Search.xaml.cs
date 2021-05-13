@@ -21,7 +21,7 @@ namespace Car_Storage
     {
         public string mode = "sort";
         public CarObject basePeramiter = null;
-        CarObject topPeramiter = null;
+        public CarObject topPeramiter = null;
 
         public Search()
         {
