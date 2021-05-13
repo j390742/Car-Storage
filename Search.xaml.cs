@@ -117,7 +117,7 @@ namespace Car_Storage
             if(!testTop && CurrentBayMainCbBx.SelectedIndex > 0) //if only the current bay is selected send back that item for editing immideatly
             {
                 mode = "item";
-                basePeramiter = ((App)Application.Current).cars.GetCar(int.Parse(CurrentBayMainCbBx.SelectedItem.ToString()));
+                basePeramiter = ((App)Application.Current).cars.GetCar(int.Parse(CurrentBayMainCbBx.SelectedItem.ToString())-1);
                 this.Close();
             }
         }
@@ -166,7 +166,6 @@ namespace Car_Storage
         private void SearchBtn_Click(object sender, RoutedEventArgs e)
         {
             PackObjects();
-            ((App)Application.Current).cars.SetSearch(basePeramiter, topPeramiter);
         }
     }
 }

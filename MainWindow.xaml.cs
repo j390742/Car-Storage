@@ -91,6 +91,7 @@ namespace Car_Storage
             dataWindow.ShowDialog();
             if (dataWindow.mode == "sort")
             {
+                ((App)Application.Current).cars.SetSearch(dataWindow.basePeramiter, dataWindow.topPeramiter);
                 ClearSortBtn.IsEnabled = true;
             }
             else if(dataWindow.mode == "item")
