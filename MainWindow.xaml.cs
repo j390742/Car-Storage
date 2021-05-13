@@ -31,18 +31,23 @@ namespace Car_Storage
 
         private void NewCatalogBtn_Click(object sender, RoutedEventArgs e) // opens a new file window with a filter for JSONS
         {
-            AddItemBtn.IsEnabled = JSON.NewJSON();
-            if (AddItemBtn.IsEnabled) { JSON.UpdateJsonFile(); }
-            UpdateData();
+            if (JSON.NewJSON()) 
+            { 
+                AddItemBtn.IsEnabled = true;
+                JSON.UpdateJsonFile();
+                UpdateData();
+            }
         }
 
 
         private void OpnCatalogBtn_Click(object sender, RoutedEventArgs e) // opens a select window with a filter for JSONS
         {
-            AddItemBtn.IsEnabled = JSON.OpenJSON();
-            JSON.DeSerialiseJsonData();
-
-            UpdateData();
+            if (JSON.OpenJSON())
+            {
+                AddItemBtn.IsEnabled = true;
+                JSON.DeSerialiseJsonData();
+                UpdateData();
+            }
         }
 
 
