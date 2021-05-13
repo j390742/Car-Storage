@@ -1,0 +1,85 @@
+﻿<Window x:Class="Car_Storage.Data"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Car_Storage"
+        mc:Ignorable="d"
+        Title="Data" Height="702" Width="499" Background="Gray">
+        <!--Data: Displays and allows editing of a selected object from the JSON (after importing to a list) or the creation of a new object to be placed in the list then exported to the JSON-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Image Display-->
+        <StackPanel Orientation="Horizontal" Grid.Row="0"  Margin="2,0,0,2">
+            <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="default.jpg" x:Name="Imageimg"/>
+        </StackPanel>
+
+        <!--Current Bay edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="2">
+            <Label Content="Current bay" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <ComboBox  Height="35" x:Name="CurrentBayCbBx" HorizontalAlignment="Right" Width="384"/>
+        </StackPanel>
+
+        <!--Registration Number edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="2">
+            <Label Content="Registration No." HorizontalAlignment="Left" VerticalAlignment="Center" Width="105" />
+            <TextBox HorizontalAlignment="Right" Text="" Width="384" TextAlignment="Center" x:Name="RegNoTxBx"/>
+        </StackPanel>
+
+        <!--Make edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="2">
+            <Label Content="Make" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <TextBox HorizontalAlignment="Right" Text="" Width="384" TextAlignment="Center" x:Name="MakeTxBx"/>
+        </StackPanel>
+
+        <!--Model edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="2">
+            <Label Content="Model" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <TextBox HorizontalAlignment="Right" Text="" Width="384" TextAlignment="Center" x:Name="ModelTxBx"/>
+        </StackPanel>
+
+        <!--Price edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="2">
+            <Label Content="Price" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <TextBox HorizontalAlignment="Right" Text="" Width="384" TextAlignment="Center" x:Name="PriceTxBx" />
+        </StackPanel>
+
+        <!--Year edit box-->
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="2">
+            <Label Content="Year" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <TextBox HorizontalAlignment="Right" Text="" Width="384" TextAlignment="Center" x:Name="YearTxBx"/>
+        </StackPanel>
+
+        <!--Photo search button and text display-->
+        <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="2">
+            <Label Content="Photo Filename" HorizontalAlignment="Left" VerticalAlignment="Center" Width="105"/>
+            <Button Content="Browse" Background="White" BorderBrush="DarkGray" HorizontalAlignment="Left" Width="94" x:Name="BrowsePhotoBtn" Height="38" VerticalAlignment="Bottom" Click="BrowsePhotoBtn_Click"/>
+            <TextBox HorizontalAlignment="Right" TextAlignment="Center" Width="291" IsReadOnly="True" x:Name="PhotoTxBx"/>
+        </StackPanel>
+
+        <!--Cancel, Delete and Finish edit button-->
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Margin="2">
+            <Grid Width="490">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width ="*"/>
+                    <ColumnDefinition Width ="*"/>
+                    <ColumnDefinition Width ="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Cancel" Background="DarkGray" HorizontalAlignment="Center" x:Name="CancleBtn" Grid.Column="0" Margin="5,0" Width="150" Click="CancleBtn_Click"/>
+                <Button Content="Remove"  Background="DarkGray" HorizontalAlignment="Center" x:Name="RemoveBtn" Grid.Column="1" Margin="5,0" Width="150" Click="RemoveBtn_Click"/>
+                <Button Content="Continue"  Background="DarkGray" HorizontalAlignment="Center" x:Name="ContinueBtn" Grid.Column="2" Margin="5,0" Width="150" Click="ContinueBtn_Click"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
