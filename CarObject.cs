@@ -22,12 +22,12 @@ namespace Car_Storage
         public CarObject() // for use in new objects
         {
             this.currentBay = -1;
-            this.registrationNumber = "";
-            this.make = "";
-            this.model = "";
-            this.year = 0;
-            this.price = 0;
-            this.photoFileName = "";
+            this.registrationNumber = null;
+            this.make = null;
+            this.model = null;
+            this.year = -1;
+            this.price = -1;
+            this.photoFileName = null;
         }
 
         public void ParkSet(int _currentBay) // for use in the visual tool, shows what bay it is in

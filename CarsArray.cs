@@ -24,12 +24,19 @@ namespace Car_Storage
 
 
         /// <summary>
-        /// Update the array with new array data of the same length
+        /// Update the array with new array data of the same length after testing its validity
         /// </summary>
         /// <param name="_array">New array to set to cars</param>
-        public void SetArray(CarObject[] _array)
+        public bool SetArray(CarObject[] _array)
         {
-            Array.Copy(_array, cars, cars.Length);
+            CarObject[] tempArray = new CarObject[cars.Length];
+
+            try { Array.Copy(_array, tempArray, _array.Length); }
+            catch { return false; }
+
+            Array.Clear(cars, 0, cars.Length);
+            Array.Copy(tempArray, cars, tempArray.Length);
+            return true;
         }
 
 
@@ -39,10 +46,24 @@ namespace Car_Storage
             return cars;
         }
 
-        public void SetSearch(CarObject _basePeramiter, CarObject _topPeramiter)
+        /// <summary>
+        /// provide the base and/or top of rearching the car data
+        /// </summary>
+        /// <param name="_basePeramiter">base data</param>
+        /// <param name="_topPeramiter">top data</param>
+        /// <returns> bool if successful</returns>
+        public bool SetSearch(CarObject _basePeramiter, CarObject _topPeramiter)
         {
-            basePeramiter = _basePeramiter;
-            topPeramiter = _topPeramiter;
+            try
+            {
+                basePeramiter = _basePeramiter;
+                topPeramiter = _topPeramiter;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool TestPerams(CarObject _car)
@@ -95,21 +116,21 @@ namespace Car_Storage
             if (topPeramiter != null)
             {
                 //the same as the car's parking bay range start variable or is equal to "Any"
-                if (!(topPeramiter.currentBay < 0 || (_car.currentBay >= topPeramiter.currentBay)))
+                if (!(topPeramiter.currentBay < 0 || (_car.currentBay <= topPeramiter.currentBay)))
                 {
                     return false;
                 }
 
 
                 //the same as the car's price range end variable or is equal to "Any"
-                if (!(topPeramiter.price < 0 || (_car.price >= topPeramiter.price)))
+                if (!(topPeramiter.price < 0 || (_car.price <= topPeramiter.price)))
                 {
                     return false;
                 }
 
 
                 //the same as the car's year range end variable or is equal to "Any"
-                if (!(topPeramiter.year < 0 || (_car.year >= topPeramiter.year)))
+                if (!(topPeramiter.year < 0 || (_car.year <= topPeramiter.year)))
                 {
                     return false;
                 }
@@ -123,17 +144,21 @@ namespace Car_Storage
         /// Converts the array into a list
         /// </summary>
         /// <returns>the amount of items moved from the array into the list</returns>
-        public List<CarObject> ParseArray(CarObject[] _input = null)
+        public List<CarObject> ParseArray()
         {
             List<CarObject> carsView = new List<CarObject>();
             usedBays = 0;
             for (int i = 0; i < cars.Length; i++)
             {
-                if (cars[i] != null && TestPerams(cars[i]))
+                if (cars[i] != null)
                 {
                     usedBays += 1;
                     cars[i].ParkSet(i + 1);
-                    carsView.Add(cars[i]);
+
+                    if (TestPerams(cars[i]))
+                    {
+                        carsView.Add(cars[i]);
+                    }
                 }
             }
             return carsView;
@@ -141,13 +166,22 @@ namespace Car_Storage
 
 
         /// <summary>
-        /// Sets car data object to a posision in the array
+        /// Sets car data object to a posision in the array if it falls in the bounds
         /// </summary>
         /// <param name="_car">New car data</param>
         /// <param name="_carPosition">Where in the array the car is going to go</param>
-        public void SetCar(CarObject _car, int _carPosition)
+        /// <returns> bool if successful</returns>
+        public bool SetCar(CarObject _car, int _carPosition)
         {
-            cars[_carPosition] = _car;
+            if(0 <= _carPosition && _carPosition <= cars.Length)
+            {
+                cars[_carPosition] = _car;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
@@ -157,10 +191,18 @@ namespace Car_Storage
         /// <param name="_car">New car data</param>
         /// <param name="_carPosition">Where in the array the car was</param>
         /// <param name="_targetPosition">Where in the array the car is going to go</param>
-        public void SetCar(CarObject _car, int _carPosition, int _targetPosition)
+        public bool SetCar(CarObject _car, int _carPosition, int _targetPosition)
         {
-            cars[_carPosition] = null;
-            cars[_targetPosition] = _car;
+            if ((0 <= _carPosition && _carPosition < cars.Length) && (0 <= _targetPosition && _targetPosition < cars.Length))
+            {
+                cars[_carPosition] = null;
+                cars[_targetPosition] = _car;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
@@ -168,10 +210,17 @@ namespace Car_Storage
         /// Retreives a car at a place in the array
         /// </summary>
         /// <param name="_carPosition">The position of the requested car</param>
-        /// <returns></returns>
+        /// <returns>the car or nbull if the retrieval wasn't successful</returns>
         public CarObject GetCar(int _carPosition)
         {
-            return cars[_carPosition];
+            if (0 <= _carPosition && _carPosition < cars.Length)
+            {
+                return cars[_carPosition];
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
@@ -187,6 +236,43 @@ namespace Car_Storage
         {
             ParseArray();
             return usedBays;
+        }
+
+        /// <summary>
+        /// Searches through a sorted array with a binary search
+        /// </summary>
+        /// <param name="array">The array to be searched through</param>
+        /// <param name="bottomOfTheArray">Where the array search starts</param>
+        /// <param name="topOfTheArray">Where the array search ends</param>
+        /// <param name="targetValue">The end goal of the binary search</param>
+        /// <returns>the index of targetValue if found or -1 if its not</returns>
+        public int binarySearch(int[] array, int bottomOfTheArray, int topOfTheArray, int targetValue)
+        {
+            if (topOfTheArray >= bottomOfTheArray) // if the top and bottom of the array don't cross
+            {
+                int middleOfTheArray = bottomOfTheArray + (topOfTheArray - bottomOfTheArray) / 2;
+
+                //If the target is at the middle
+                if (array[middleOfTheArray] == targetValue)
+                {
+                    return middleOfTheArray;
+                }
+
+                // if the target is smaller than the middle, recurse the top half of the array through
+                if (array[middleOfTheArray] > targetValue)
+                {
+                    return binarySearch(array, bottomOfTheArray, middleOfTheArray - 1, targetValue);
+                }
+
+                // if the target is larger than the middle, recurse the top bottom of the array through
+                if (array[middleOfTheArray] < targetValue)
+                {
+                    return binarySearch(array, middleOfTheArray + 1, topOfTheArray, targetValue);
+                }
+            }
+
+            //else (the object isn't found)
+            return -1;
         }
     }
 }

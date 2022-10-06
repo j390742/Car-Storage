@@ -22,9 +22,11 @@ namespace Car_Storage
     {
         int originalBay; //where the car came from
         int carsLength = ((App)Application.Current).cars.GetLength(); // the size of the array
+        JSON_Interaction json = new JSON_Interaction();
 
         public Data(CarObject _selected)
         {
+            originalBay = _selected.currentBay;
             InitializeComponent();
             fillComboBox();
             UpdateData(_selected);
@@ -35,10 +37,10 @@ namespace Car_Storage
         {
             for (int i = 1; i <= carsLength; i++)
             {
-                CurrentBayCbBx.Items.Add(i);
+                CurrentBayCbBx.Items.Add($"{i}"); /// The reason for the formatted string is futher development
             }
+            CurrentBayCbBx.SelectedIndex = ((App)Application.Current).cars.GetUsedLength();
         }
-
 
         void UpdateData(CarObject _selected) //adds the already present data from the imported object to the apropreate data boxes
         {
@@ -47,17 +49,33 @@ namespace Car_Storage
                 Imageimg.Source = new BitmapImage(new Uri(_selected.photoFileName));
                 PhotoTxBx.Text = _selected.photoFileName;
             }
-            catch { }
-            if(_selected.currentBay > 0)
+            catch
+            {  }
+
+            if(_selected.currentBay >= 0)
             {
                 CurrentBayCbBx.SelectedIndex = _selected.currentBay - 1;
                 originalBay = _selected.currentBay - 1;
             }
-            RegNoTxBx.Text = "" + _selected.registrationNumber;
-            MakeTxBx.Text = _selected.make;
-            ModelTxBx.Text = _selected.model;
-            YearTxBx.Text = "" + _selected.year;
-            PriceTxBx.Text = "" + _selected.price;
+
+            if (_selected != null) //if the selected item as a whole is not null
+            {
+                //enter each item in (as long as they aren't null too
+                RegNoTxBx.Text = _selected.registrationNumber ?? "";
+                MakeTxBx.Text = _selected.make ?? "";
+                ModelTxBx.Text = _selected.model ?? "";
+                YearTxBx.Text = _selected.year.ToString();
+                PriceTxBx.Text = _selected.price.ToString();
+            }
+            else
+            {
+                //if the object is null, make it all blank.
+                RegNoTxBx.Text = "";
+                MakeTxBx.Text = "";
+                ModelTxBx.Text = "";
+                YearTxBx.Text = "";
+                PriceTxBx.Text = "";
+            }
         }
 
 
@@ -79,7 +97,7 @@ namespace Car_Storage
             
             if(carObject != null)
             {
-                if (((App)Application.Current).cars.GetCar(carObject.currentBay - 1) != null )
+                if (((App)Application.Current).cars.GetCar(carObject.currentBay) != null )
                 {
                     MessageBoxResult messageBoxResult = MessageBox.Show("There is a car in that bay currently.\n Are you sure you want to overide?", "Change Confirmation", System.Windows.MessageBoxButton.YesNo);
                     if (messageBoxResult == MessageBoxResult.No)
@@ -122,32 +140,57 @@ namespace Car_Storage
             return _packingObject;
         }
 
-        CarObject ErrorMessage(string _where)
+        CarObject ErrorMessage(string _where) //if one of the above meantioned feilds fails return an error
         {
             MessageBox.Show($"The Entered {_where} is incorrectly formatted. Please re-enter the data", "Input Error");
             return null;
         }
 
+        private void RemoveBtn_Click(object sender, RoutedEventArgs e) //if a car is being removed, propmts to confirm sale, if so, copy to the sold car json file in MyDocuments of current user
+        {
+            MessageBoxResult soldResult = MessageBox.Show($"Would you like to log the sale of the {YearTxBx.Text} {MakeTxBx.Text} {ModelTxBx.Text}?", "Sale logging", MessageBoxButton.YesNoCancel);
+            if (soldResult == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    string location = json.OpenJSON();
+
+                    if (location != null)
+                    {
+                        List<CarObject> tempList = new List<CarObject>();
+                        tempList.AddRange(json.DeSerialiseJsonData(location).ToList());
+
+                        tempList.Add(((App)Application.Current).cars.GetCar(originalBay));
+                        json.UpdateJsonFile(location, tempList.ToArray());
+
+                        if (originalBay >= 0) { ((App)Application.Current).cars.SetCar(null, originalBay); }
+
+                        this.Close();
+                    }
+                    
+                }
+                catch
+                {
+                    MessageBox.Show($"There was an error editing the sold JSON", "Output Error");
+                    return;
+                }
+            }
+            else if (soldResult == MessageBoxResult.No)
+            {
+                if (originalBay >= 0) { ((App)Application.Current).cars.SetCar(null, originalBay); }
+                this.Close();
+            }
+        }
 
         private void CancleBtn_Click(object sender, RoutedEventArgs e) //closes the window and logs that for use in the other window
         {
             this.Close();
         }
 
-        private void RemoveBtn_Click(object sender, RoutedEventArgs e)
+        private void PhotoTxBx_TextChanged(object sender, TextChangedEventArgs e) //for internet images or manually entered links
         {
-            MessageBoxResult result = MessageBox.Show($"Is the {MakeTxBx.Text} {ModelTxBx.Text} sold?", "Remove Choice", MessageBoxButton.YesNoCancel);
-            if(result == MessageBoxResult.Yes)
-            {
-                if(originalBay >= 0) { ((App)Application.Current).cars.SetCar(null, originalBay); }
-                //TODO: Sell Condition
-                this.Close();
-            }
-            else if (result == MessageBoxResult.No)
-            {
-                if (originalBay >= 0) { ((App)Application.Current).cars.SetCar(null, originalBay); }
-                this.Close();
-            }
+            try{Imageimg.Source = new BitmapImage(new Uri(PhotoTxBx.Text));}
+            catch { }
         }
     }
 }

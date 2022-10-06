@@ -21,24 +21,24 @@ namespace Car_Storage
 {
     public class JSON_Interaction
     {
+        public string locationOfJSON; //location of JSON
         int carsLength = ((App)Application.Current).cars.GetLength();
-        public string fileLocation; //location of JSON
 
         /// <summary>
         /// Opens an Open File Dialog window and sets fileLocation to the output
         /// </summary>
         /// <returns>cancel bool</returns>
-        public bool OpenJSON()
+        public string OpenJSON()
         {
+            string fileLocation = null; //location of JSON
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "JSON file (*.json)|*.json";
             if (openFileDialog.ShowDialog() == true)
             {
-                ((App)Application.Current).cars.SetArray(new CarObject[carsLength]);
                 fileLocation = openFileDialog.FileName;
-                return true;
             }
-            return false;
+            return fileLocation;
         }
 
 
@@ -46,16 +46,17 @@ namespace Car_Storage
         /// Opens an Save File Dialog window and sets fileLocation to the output
         /// </summary>
         /// <returns>cancel bool</returns>
-        public bool NewJSON() // opens a new file window with a filter for JSONS
+        public string NewJSON() // opens a new file window with a filter for JSONS
         {
+            string fileLocation = null; //location of JSON
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JSON file (*.json)|*.json";
             if (saveFileDialog.ShowDialog() == true)
             {
                 fileLocation = saveFileDialog.FileName;
-                return true;
             }
-            return false;
+            return fileLocation;
         }
 
 
@@ -64,7 +65,7 @@ namespace Car_Storage
         /// </summary>
         public void UpdateJsonFile(string _fileLocation = "", CarObject[] _array = null) // compresses the object list into a JSON file, should be fired any time an object changes
         {
-            if(_fileLocation == "") { _fileLocation = fileLocation; }
+            if(_fileLocation == "") { _fileLocation = locationOfJSON; }
             if(_array == null) { _array = ((App)Application.Current).cars.GetArray(); }
             using (StreamWriter file = File.CreateText(_fileLocation))
             {
@@ -78,9 +79,52 @@ namespace Car_Storage
         /// fills the car array with the JSON referenced in fileLocation
         /// </summary>
         /// <returns>pass bool</returns>
-        public bool DeSerialiseJsonData(string _fileLocation = "") 
+        public CarObject[] DeSerialiseJsonData()
         {
-            if (_fileLocation == "") { _fileLocation = fileLocation; }
+            CarObject[] tempUnpackCar = null;
+
+            try
+            {
+                string jsonStorage = "";
+
+                using (StreamReader reader = new StreamReader(new FileStream(locationOfJSON, FileMode.Open)))
+                {
+                    string line;
+                    // Read line by line  
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        jsonStorage += line;
+                    }
+                }
+
+                if (jsonStorage != "")
+                {
+                    tempUnpackCar = JsonConvert.DeserializeObject<List<CarObject>>(jsonStorage).ToArray();
+                }
+
+                if (tempUnpackCar.Length > carsLength)
+                {
+                    MessageBox.Show($"The selected JSON has more than {carsLength} entries. only the first {carsLength} will be shown", "Too many entries in JSON");
+                }
+            }
+            catch
+            {
+                MessageBox.Show($"The selected JSON is either incorrectly formatted or corrupted", "JSON error");
+                return null;
+            }
+
+            return tempUnpackCar;
+        }
+
+
+        /// <summary>
+        /// fills the car array with the JSON referenced in fileLocation (for use with SOLD json primarily)
+        /// </summary>
+        /// <returns>pass bool</returns>
+        public CarObject[] DeSerialiseJsonData(string _fileLocation = "") 
+        {
+            CarObject[] tempUnpackCar = null;
+
             try
             {
                 string jsonStorage = "";
@@ -95,22 +139,30 @@ namespace Car_Storage
                     }
                 }
 
-                CarObject[] tempUnpackCar = JsonConvert.DeserializeObject<List<CarObject>>(jsonStorage).ToArray();
-
-                if (tempUnpackCar.Length > carsLength)
+                if(jsonStorage != "")
                 {
-                    MessageBox.Show($"The selected JSON has more than {carsLength} entries. only the first {carsLength} will be shown", "Too many entries in JSON");
+                    tempUnpackCar = JsonConvert.DeserializeObject<List<CarObject>>(jsonStorage).ToArray();
                 }
-
-                ((App)Application.Current).cars.SetArray(tempUnpackCar);
             }
-            catch (Exception)
+            catch 
             {
                 MessageBox.Show($"The selected JSON is either incorrectly formatted or corrupted", "JSON error");
-                return false;
+                return null;
             }
 
-            return true;
+            return tempUnpackCar;
+        }
+
+
+        /// <summary>
+        /// Checks to see if a file and it's directory exists
+        /// </summary>
+        /// <param name="_folder">The folder location</param>
+        /// <param name="_file">the file in the folder location (include the \ before the file)</param>
+        /// <returns>if the file exists: Bool</returns>
+        public bool CheckFile(string _location)
+        {
+            return File.Exists(_location);
         }
     }
 }

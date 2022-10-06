@@ -31,9 +31,13 @@ namespace Car_Storage
 
         private void NewCatalogBtn_Click(object sender, RoutedEventArgs e) // opens a new file window with a filter for JSONS
         {
-            if (JSON.NewJSON()) 
+            JSON.locationOfJSON = JSON.NewJSON();
+
+            if (JSON.locationOfJSON != null) 
             { 
                 AddItemBtn.IsEnabled = true;
+                CarObject[] listData = new CarObject[carsLength];
+                ((App)Application.Current).cars.SetArray(listData);
                 JSON.UpdateJsonFile();
                 UpdateData();
             }
@@ -42,11 +46,16 @@ namespace Car_Storage
 
         private void OpnCatalogBtn_Click(object sender, RoutedEventArgs e) // opens a select window with a filter for JSONS
         {
-            if (JSON.OpenJSON())
+            JSON.locationOfJSON = JSON.OpenJSON();
+            if (JSON.locationOfJSON != null)
             {
-                AddItemBtn.IsEnabled = true;
-                JSON.DeSerialiseJsonData();
-                UpdateData();
+                CarObject[] listData = JSON.DeSerialiseJsonData();
+                if(listData != null)
+                {
+                    ((App)Application.Current).cars.SetArray(listData);
+                    AddItemBtn.IsEnabled = true;
+                    UpdateData();
+                }
             }
         }
 
@@ -89,18 +98,16 @@ namespace Car_Storage
         {
             Search dataWindow = new Search();
             dataWindow.ShowDialog();
-            if (dataWindow.mode == "sort")
-            {
-                ((App)Application.Current).cars.SetSearch(dataWindow.basePeramiter, dataWindow.topPeramiter);
-                ClearSortBtn.IsEnabled = true;
-            }
-            else if(dataWindow.mode == "item")
+            if (dataWindow.isSearching == false && dataWindow.basePeramiter != null)
             {
                 EditObject(dataWindow.basePeramiter);
+                ((App)Application.Current).cars.SetSearch(null, null);
             }
+            ClearSortBtn.IsEnabled = dataWindow.isSearching;
+            UpdateData();
         }
 
-        void EditObject(CarObject _selectedCar)
+        void EditObject(CarObject _selectedCar) //opens the data window and parses the data stored in the object entered
         {
             Data dataWindow = new Data(_selectedCar);
             dataWindow.ShowDialog();
@@ -108,14 +115,14 @@ namespace Car_Storage
             UpdateData();
         }
 
-        void UpdateData()
+        void UpdateData() //updates the data grid
         {
             ItemDataGrid.ItemsSource = "";
             ItemDataGrid.ItemsSource = ((App)Application.Current).cars.ParseArray();
             int _count = ((App)Application.Current).cars.GetUsedLength();
             AddItemBtn.Content = $"New Item ({_count}/{carsLength})";
             SortListBtn.IsEnabled = _count > 0;
-            AddItemBtn.IsEnabled = _count <= carsLength;
+            AddItemBtn.IsEnabled = _count < carsLength;
         }
     }
 }

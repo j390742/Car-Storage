@@ -19,7 +19,7 @@ namespace Car_Storage
     /// </summary>
     public partial class Search : Window
     {
-        public string mode = "sort";
+        public bool isSearching = false;
         public CarObject basePeramiter = null;
         public CarObject topPeramiter = null;
 
@@ -76,49 +76,56 @@ namespace Car_Storage
         void PackObjects() //test if the feilds have been used then enter the data into the search objects
         {
             bool testTop = TestTop();
-            if (testTop)
+            bool testBase = TestBase();
+
+            if (testBase)
             {
-                topPeramiter.make = MakeCbBx.SelectedItem.ToString();
-                topPeramiter.model = ModelCbBx.SelectedItem.ToString();
-                topPeramiter.registrationNumber = RegoNoCbBx.SelectedItem.ToString();
-
-                if (CurrentBayRangeCbBx.SelectedIndex > 0)
-                { topPeramiter.currentBay = int.Parse(CurrentBayRangeCbBx.SelectedItem.ToString()); }
-                else { topPeramiter.currentBay = -1; }
-
-                if (PriceRangeCbBx.SelectedIndex > 0)
-                { topPeramiter.price = int.Parse(PriceRangeCbBx.SelectedItem.ToString()); }
-                else { topPeramiter.price = -1; }
-
-                if (YearRangeCbBx.SelectedIndex > 0)
-                { topPeramiter.year = int.Parse(YearRangeCbBx.SelectedItem.ToString()); }
-                else { topPeramiter.year = -1; }
-            }
-
-            if (TestBase())
-            {
-                basePeramiter.make = MakeCbBx.SelectedItem.ToString();
-                basePeramiter.model = ModelCbBx.SelectedItem.ToString();
-                basePeramiter.registrationNumber = RegoNoCbBx.SelectedItem.ToString();
+                basePeramiter = new CarObject();
+                basePeramiter.make = MakeCbBx.Text;
+                basePeramiter.model = ModelCbBx.Text;
+                basePeramiter.registrationNumber = RegoNoCbBx.Text;
 
                 if (CurrentBayMainCbBx.SelectedIndex > 0)
-                { basePeramiter.currentBay = int.Parse(CurrentBayMainCbBx.SelectedItem.ToString()); }
+                { basePeramiter.currentBay = int.Parse(CurrentBayMainCbBx.Text); }
                 else { basePeramiter.currentBay = -1; }
 
                 if (PriceMainCbBx.SelectedIndex > 0)
-                { basePeramiter.price = int.Parse(PriceMainCbBx.SelectedItem.ToString()); }
+                { basePeramiter.price = int.Parse(PriceMainCbBx.Text); }
                 else { basePeramiter.price = -1; }
 
                 if (YearMainCbBx.SelectedIndex > 0)
-                { basePeramiter.year = int.Parse(YearMainCbBx.SelectedItem.ToString()); }
+                { basePeramiter.year = int.Parse(YearMainCbBx.Text); }
                 else { basePeramiter.year = -1; }
             }
 
-            if(!testTop && CurrentBayMainCbBx.SelectedIndex > 0) //if only the current bay is selected send back that item for editing immideatly
+            if (testTop)
             {
-                mode = "item";
-                basePeramiter = ((App)Application.Current).cars.GetCar(int.Parse(CurrentBayMainCbBx.SelectedItem.ToString())-1);
-                this.Close();
+                topPeramiter = new CarObject();
+                topPeramiter.make = MakeCbBx.Text;
+                topPeramiter.model = ModelCbBx.Text;
+                topPeramiter.registrationNumber = RegoNoCbBx.Text;
+
+                if (CurrentBayRangeCbBx.SelectedIndex > 0)
+                { topPeramiter.currentBay = int.Parse(CurrentBayRangeCbBx.Text); }
+                else { topPeramiter.currentBay = -1; }
+
+                if (PriceRangeCbBx.SelectedIndex > 0)
+                { topPeramiter.price = int.Parse(PriceRangeCbBx.Text); }
+                else { topPeramiter.price = -1; }
+
+                if (YearRangeCbBx.SelectedIndex > 0)
+                { topPeramiter.year = int.Parse(YearRangeCbBx.Text); }
+                else { topPeramiter.year = -1; }
+            }
+            else
+            {
+                topPeramiter = basePeramiter;
+            }
+
+            if(!testTop && !testBase && CurrentBayMainCbBx.SelectedIndex > 0) //if only the current bay is selected send back that item for editing immideatly
+            {
+                isSearching = false;
+                basePeramiter = ((App)Application.Current).cars.GetCar(int.Parse(CurrentBayMainCbBx.Text)-1);
             }
         }
 
@@ -159,13 +166,16 @@ namespace Car_Storage
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            mode = "cancel";
+            isSearching = false;
             this.Close();
         }
 
         private void SearchBtn_Click(object sender, RoutedEventArgs e)
         {
             PackObjects();
+            ((App)Application.Current).cars.SetSearch(basePeramiter, topPeramiter);
+            isSearching = basePeramiter != null && topPeramiter != null;
+            this.Close();
         }
     }
 }

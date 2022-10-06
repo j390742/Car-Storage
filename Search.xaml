@@ -5,87 +5,122 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Car_Storage"
         mc:Ignorable="d"
-        Title="Search" Height="302" Width="349" Background="Gray">
+        Title="Search" 
+        Height="327" 
+        MinHeight="302" 
+        Width="379" 
+        MinWidth="379" 
+        Background="Gray"
+        >
         <!--Search: Option (taken from atributes of the list of objects from the JSON) selection that are used as extra filtering in an alterate array to list display parser-->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="22*"/>
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+        <!-- One option section (make, model, Registry Number)-->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="18*"/>
+                <ColumnDefinition Width="110*"/>
+            </Grid.ColumnDefinitions>
 
-        <!--Make search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,2,0,2">
-            <Label Content="Make" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Width="72"/>
-            <ComboBox x:Name="MakeCbBx" Width="268">
-                <ComboBoxItem Content="Any" IsSelected="True"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Section Labels-->
+            <Label Content="Type" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+            <Label Content="Entry field" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+            
+            <!--Make search options-->
+            <Label Content="Make" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+            <ComboBox x:Name="MakeCbBx" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="5,2">
+                <ComboBoxItem Content="Any" IsSelected="True" />
             </ComboBox>
-        </StackPanel>
 
-        <!--Model search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="0,2,0,2">
-            <Label Content="Model" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Height="26" Width="72"/>
-            <ComboBox x:Name="ModelCbBx"  Width="268">
+            <!--Model search options-->
+            <Label Content="Model"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"/>
+            <ComboBox x:Name="ModelCbBx"  Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="4"  Margin="5,2">
                 <ComboBoxItem Content="Any" IsSelected="True"/>
             </ComboBox>
-        </StackPanel>
 
-        <!--Current bay range search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="3"  Margin="0,2,0,2">
-            <Label Content="Current Bay" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Width="72" />
-            <ComboBox x:Name="CurrentBayMainCbBx" Width="125" >
+            <!--Registration number range search options-->
+            <Label Content="Reg No." HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0"/>
+            <ComboBox x:Name="RegoNoCbBx"   Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Margin="5,2">
                 <ComboBoxItem Content="Any" IsSelected="True"/>
             </ComboBox>
-            <CheckBox ToolTip="Range Selection" Height="14" Width="18" x:Name="CurrentBayRangeSlct" Checked="CurrentBayRangeSlct_Checked" />
-            <ComboBox x:Name="CurrentBayRangeCbBx" IsEnabled="False" Width="125">
-                <ComboBoxItem Content="Any" IsSelected="True"/>
-            </ComboBox>
-        </StackPanel>
+        </Grid>
+        
+        <!-- Range option section (Bay, Price, Year)-->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
 
-        <!--Registration number range search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="2"  Margin="0,2,0,2">
-            <Label Content="Reg No." HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="26" Width="72"/>
-            <ComboBox x:Name="RegoNoCbBx"  Width="268">
-                <ComboBoxItem Content="Any" IsSelected="True"/>
-            </ComboBox>
-        </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="46*"/>
+                <ColumnDefinition Width="130*"/>
+                <ColumnDefinition Width="43*"/>
+                <ColumnDefinition Width="130*"/>
+            </Grid.ColumnDefinitions>
 
-        <!--Price range search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="4"  Margin="0,2,0,2">
-            <Label Content="Price" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="26" Width="72"/>
-            <ComboBox x:Name="PriceMainCbBx"  Width="125">
-                <ComboBoxItem Content="Any" IsSelected="True"/>
-            </ComboBox>
-            <CheckBox ToolTip="Range Selection" Height="14" Width="18" x:Name="PriceRangeSlct" Checked="PriceRangeSlct_Checked"/>
-            <ComboBox x:Name="PriceRangeCbBx" IsEnabled="False"  Width="125">
-                <ComboBoxItem Content="Any" IsSelected="True"/>
-            </ComboBox>
-        </StackPanel>
+            <!--Section Labels-->
+            <Label Content="Type" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+            <Label Content="Entry field" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+            <Label Content="Range" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2"/>
+            <Label Content="Entry field" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3"/>
 
-        <!--Year range search options-->
-        <StackPanel Orientation="Horizontal" Grid.Row="5"  Margin="0,2,0,2">
-            <Label Content="Year" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Width="72"/>
-            <ComboBox x:Name="YearMainCbBx"  Width="125" >
+            <!--Current bay range search options-->
+            <Label Content="Bay"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Grid.Row="1" Grid.Column="0"/>
+            <ComboBox x:Name="CurrentBayMainCbBx" Grid.Row="1" Grid.Column="1"  Margin="5,2">
                 <ComboBoxItem Content="Any" IsSelected="True"/>
             </ComboBox>
-            <CheckBox ToolTip="Range Selection" Height="14" Width="18" x:Name="YearRangeSlct" Checked="YearRangeSlct_Checked"/>
-            <ComboBox x:Name="YearRangeCbBx" IsEnabled="False"  Width="125">
+            <CheckBox HorizontalAlignment="Center" VerticalContentAlignment="Center" ToolTip="Range Selection" x:Name="CurrentBayRangeSlct" Checked="CurrentBayRangeSlct_Checked" Grid.Row="1" Grid.Column="2"/>
+            <ComboBox x:Name="CurrentBayRangeCbBx" IsEnabled="False" Grid.Row="1"  Grid.Column="3" Grid.ColumnSpan="2"  Margin="5,2">
                 <ComboBoxItem Content="Any" IsSelected="True"/>
             </ComboBox>
-        </StackPanel>
 
-        <!--The search and cancel button-->
-        <StackPanel Orientation="Horizontal" Grid.Row="7">
-            <Button Content="Search"  x:Name="SearchBtn" Width="170" Click="SearchBtn_Click"/>
-            <Button Content="Cancel" x:Name="CancelBtn" Width="170" Click="CancelBtn_Click"/>
-        </StackPanel>
+            <!--Price range search options-->
+            <Label Content="Price" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"/>
+            <ComboBox x:Name="PriceMainCbBx"   Grid.Row="2" Grid.Column="1" Margin="5,2">
+                <ComboBoxItem Content="Any" IsSelected="True"/>
+            </ComboBox>
+            <CheckBox ToolTip="Range Selection" HorizontalAlignment="Center" VerticalContentAlignment="Center" x:Name="PriceRangeSlct" Checked="PriceRangeSlct_Checked"  Grid.Row="2" Grid.Column="2"/>
+            <ComboBox x:Name="PriceRangeCbBx" IsEnabled="False"   Grid.Row="2"  Grid.Column="3" Grid.ColumnSpan="2" Margin="5,2">
+                <ComboBoxItem Content="Any" IsSelected="True"/>
+            </ComboBox>
+
+            <!--Year range search options-->
+            <Label Content="Year" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0"/>
+            <ComboBox x:Name="YearMainCbBx"   Grid.Row="3" Grid.Column="1" Margin="5,2">
+                <ComboBoxItem Content="Any" IsSelected="True"/>
+            </ComboBox>
+            <CheckBox ToolTip="Range Selection" HorizontalAlignment="Center" VerticalContentAlignment="Center"  x:Name="YearRangeSlct" Checked="YearRangeSlct_Checked"  Grid.Row="3" Grid.Column="2"/>
+            <ComboBox x:Name="YearRangeCbBx" IsEnabled="False"   Grid.Row="3"  Grid.Column="3" Grid.ColumnSpan="2"  Margin="5,2">
+                <ComboBoxItem Content="Any" IsSelected="True"/>
+            </ComboBox>
+        </Grid>
+
+        <!--Buttons (Search, Cancel)-->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--The search and cancel button-->
+            <Button Content="Search"  x:Name="SearchBtn" Click="SearchBtn_Click"  Grid.Column="0" Margin="2"/>
+            <Button Content="Cancel" x:Name="CancelBtn" Click="CancelBtn_Click"  Grid.Column="1" Margin="2"/>
+        </Grid>
     </Grid>
+    
 </Window>
